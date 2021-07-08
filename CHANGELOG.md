@@ -1,19 +1,27 @@
+## 1.0.2 (July 07, 2021)
+
+BUG FIXES:
+
+* `terraform show`: Fix crash when rendering JSON plan with sensitive values in state ([#29049](https://github.com/hashicorp/terraform/issues/29049))
+* config: The `floor` and `ceil` functions no longer lower the precision of arguments to what would fit inside a 64-bit float, instead preserving precision in a similar way as most other arithmetic functions. ([#29110](https://github.com/hashicorp/terraform/issues/29110))
+* config: The `flatten` function was incorrectly treating null values of an unknown type as if they were unknown values. Now it will treat them the same as any other non-list/non-tuple value, flattening them down into the result as-is. ([#29110](https://github.com/hashicorp/terraform/issues/29110))
+
 ## 1.0.1 (June 24, 2021)
 
 ENHANCEMENTS:
 
-* json-output: The JSON plan output now indicates which state values are sensitive. ([#28889](https://github.com/hashicorp/terraform/issues/28889))
-* cli: The darwin builds can now make use of the host DNS resolver, which will fix many network related issues on MacOS.
+* `terraform show`: The JSON plan output now indicates which state values are sensitive. ([#28889](https://github.com/hashicorp/terraform/issues/28889))
+* cli: The macOS builds will now resolve hostnames using the system's DNS resolver, rather than the Go library's (incomplete) emulation of it. In particular, this will allow for the more complex resolver configurations often created by VPN clients on macOS, such as when a particular domain must be resolved using different nameservers while VPN connection is active.
 
 BUG FIXES:
 
-* backend/remote: Fix faulty Terraform Cloud version check when migrating state to the remote backend with multiple local workspaces ([#28864](https://github.com/hashicorp/terraform/issues/28864))
-* cli: Fix crash with deposed instances in json plan output ([#28922](https://github.com/hashicorp/terraform/issues/28922))
-* core: Fix crash when provider modifies and unknown block during plan ([#28941](https://github.com/hashicorp/terraform/issues/28941))
-* core: Diagnostic context was missing for some errors when validating blocks ([#28979](https://github.com/hashicorp/terraform/issues/28979))
-* core: Fix crash when calling `setproduct` with unknown values ([#28984](https://github.com/hashicorp/terraform/issues/28984))
-* json-output: Fix an issue where the JSON configuration representation was missing fully-unwrapped references. ([#8884](https://github.com/hashicorp/terraform/issues/8884))
-* json-output: Fix JSON plan resource drift to remove unchanged resources. ([#28975](https://github.com/hashicorp/terraform/issues/28975))
+* `terraform show`: Fix crash with deposed instances in json plan output. ([#28922](https://github.com/hashicorp/terraform/issues/28922))
+* `terraform show`: Fix an issue where the JSON configuration representation was missing fully-unwrapped references. ([#28884](https://github.com/hashicorp/terraform/issues/28884))
+* `terraform show`: Fix JSON plan resource drift to remove unchanged resources. ([#28975](https://github.com/hashicorp/terraform/issues/28975))
+* core: Fix crash when provider modifies and unknown block during plan. ([#28941](https://github.com/hashicorp/terraform/issues/28941))
+* core: Diagnostic context was missing for some errors when validating blocks. ([#28979](https://github.com/hashicorp/terraform/issues/28979))
+* core: Fix crash when calling `setproduct` with unknown values. ([#28984](https://github.com/hashicorp/terraform/issues/28984))
+* backend/remote: Fix faulty Terraform Cloud version check when migrating state to the remote backend with multiple local workspaces. ([#28864](https://github.com/hashicorp/terraform/issues/28864))
 
 ## 1.0.0 (June 08, 2021)
 
