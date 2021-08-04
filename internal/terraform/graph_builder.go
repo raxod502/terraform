@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/addrs"
@@ -28,6 +29,7 @@ type BasicGraphBuilder struct {
 }
 
 func (b *BasicGraphBuilder) Build(path addrs.ModuleInstance) (*Graph, tfdiags.Diagnostics) {
+	fmt.Println("graph_builder")
 	var diags tfdiags.Diagnostics
 	g := &Graph{Path: path}
 

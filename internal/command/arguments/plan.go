@@ -1,6 +1,9 @@
+//called args = flag + parameter
 package arguments
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/internal/tfdiags"
 )
 
@@ -30,6 +33,7 @@ type Plan struct {
 // If errors are encountered, a Plan value is still returned representing
 // the best effort interpretation of the arguments.
 func ParsePlan(args []string) (*Plan, tfdiags.Diagnostics) {
+	fmt.Println(args)
 	var diags tfdiags.Diagnostics
 	plan := &Plan{
 		State:     &State{},

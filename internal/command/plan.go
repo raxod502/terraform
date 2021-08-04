@@ -1,3 +1,4 @@
+//
 package command
 
 import (
@@ -28,6 +29,8 @@ func (c *PlanCommand) Run(rawArgs []string) int {
 
 	// Parse and validate flags
 	args, diags := arguments.ParsePlan(rawArgs)
+
+	fmt.Println()
 
 	// Instantiate the view, even if there are flag errors, so that we render
 	// diagnostics according to the desired view
@@ -226,6 +229,12 @@ Plan Customization Options:
                       dependencies. You can use this option multiple times to
                       include more than one object. This is for exceptional
                       use only.
+
+  -inverse-target = resource	Limit the planning operation to everything but the 
+								given module, resource, or resource instance and all of its
+								dependencies. You can use this option multiple times to
+								include more than one object. This is for exceptional
+								use only.
 
   -var 'foo=bar'      Set a value for one of the input variables in the root
                       module of the configuration. Use this option more than

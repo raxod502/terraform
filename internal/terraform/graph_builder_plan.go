@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/hashicorp/terraform/internal/addrs"
@@ -80,7 +81,7 @@ func (b *PlanGraphBuilder) Build(path addrs.ModuleInstance) (*Graph, tfdiags.Dia
 // See GraphBuilder
 func (b *PlanGraphBuilder) Steps() []GraphTransformer {
 	b.once.Do(b.init)
-
+	fmt.Println("Steps")
 	concreteResourceInstanceDeposed := func(a *NodeAbstractResourceInstance, key states.DeposedKey) dag.Vertex {
 		return &NodePlanDeposedResourceInstanceObject{
 			NodeAbstractResourceInstance: a,

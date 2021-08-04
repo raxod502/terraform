@@ -21,11 +21,26 @@ type GraphNodeTargetable interface {
 // their dependencies.
 type TargetsTransformer struct {
 	// List of targeted resource names specified by the user
-	Targets []addrs.Targetable
+	Targets        []addrs.Targetable
+	InverseTargets []addrs.Targetable
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
 	if len(t.Targets) > 0 {
+		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
+		if err != nil {
+			return err
+		}
+
+		for _, v := range g.Vertices() {
+			if !targetedNodes.Include(v) {
+				log.Printf("[DEBUG] Removing %q, filtered by targeting.", dag.VertexName(v))
+				g.Remove(v)
+			}
+		}
+	}
+
+	if len(t.InverseTargets) > 0 {
 		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
 		if err != nil {
 			return err

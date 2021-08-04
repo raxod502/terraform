@@ -538,6 +538,7 @@ func (m *Meta) extendedFlagSet(n string) *flag.FlagSet {
 
 	f.BoolVar(&m.input, "input", true, "input")
 	f.Var((*FlagStringSlice)(&m.targetFlags), "target", "resource to target")
+	f.Var((*FlagStringSlice)(&m.targetFlags), "inverse-target", "resource to ignore")
 	f.BoolVar(&m.compactWarnings, "compact-warnings", false, "use compact warnings")
 
 	if m.variableArgs.items == nil {

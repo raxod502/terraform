@@ -1,6 +1,8 @@
+//used mayhaps twice when calling -target
 package terraform
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/dag"
@@ -14,7 +16,7 @@ type GraphTransformer interface {
 }
 
 // GraphVertexTransformer is an interface that transforms a single
-// Vertex within with graph. This is a specialization of GraphTransformer
+// Vertex within the graph. This is a specialization of GraphTransformer
 // that makes it easy to do vertex replacement.
 //
 // The GraphTransformer that runs through the GraphVertexTransformers is
@@ -28,7 +30,9 @@ type graphTransformerMulti struct {
 }
 
 func (t *graphTransformerMulti) Transform(g *Graph) error {
+	fmt.Println("transform")
 	var lastStepStr string
+
 	for _, t := range t.Transforms {
 		log.Printf("[TRACE] (graphTransformerMulti) Executing graph transform %T", t)
 		if err := t.Transform(g); err != nil {
