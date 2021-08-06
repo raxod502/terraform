@@ -572,10 +572,10 @@ func (c *Context) Apply() (*states.State, tfdiags.Diagnostics) {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
 			"Applied changes may be incomplete",
-			`The plan was created with the -target option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
+			`The plan was created with the -target option or the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
     terraform plan
 	
-Note that the -target option is not suitable for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
+Note that the -target option and the -exlude option is not suitable for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
 		))
 	}
 
@@ -603,9 +603,9 @@ func (c *Context) Plan() (*plans.Plan, tfdiags.Diagnostics) {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
 			"Resource targeting is in effect",
-			`You are creating a plan with the -target option, which means that the result of this plan may not represent all of the changes requested by the current configuration.
+			`You are creating a plan with the -target option or the -exclude option, which means that the result of this plan may not represent all of the changes requested by the current configuration.
 		
-The -target option is not for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
+The -target option and the -exclude option is not for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
 		))
 	}
 
