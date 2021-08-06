@@ -41,7 +41,7 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 	}
 
 	if len(t.InverseTargets) > 0 {
-		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
+		targetedNodes, err := t.selectTargetedNodes(g, t.InverseTargets)
 		if err != nil {
 			return err
 		}
