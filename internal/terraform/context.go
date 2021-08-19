@@ -41,15 +41,16 @@ const (
 // ContextOpts are the user-configurable options to create a context with
 // NewContext.
 type ContextOpts struct {
-	Config       *configs.Config
-	Changes      *plans.Changes
-	State        *states.State
-	Targets      []addrs.Targetable
-	ForceReplace []addrs.AbsResourceInstance
-	Variables    InputValues
-	Meta         *ContextMeta
-	PlanMode     plans.Mode
-	SkipRefresh  bool
+	Config         *configs.Config
+	Changes        *plans.Changes
+	State          *states.State
+	Targets        []addrs.Targetable
+	ExcludeTargets []addrs.Targetable
+	ForceReplace   []addrs.AbsResourceInstance
+	Variables      InputValues
+	Meta           *ContextMeta
+	PlanMode       plans.Mode
+	SkipRefresh    bool
 
 	Hooks        []Hook
 	Parallelism  int
@@ -96,14 +97,15 @@ type ContextMeta struct {
 // perform operations on infrastructure. This structure is built using
 // NewContext.
 type Context struct {
-	config       *configs.Config
-	changes      *plans.Changes
-	skipRefresh  bool
-	targets      []addrs.Targetable
-	forceReplace []addrs.AbsResourceInstance
-	variables    InputValues
-	meta         *ContextMeta
-	planMode     plans.Mode
+	config         *configs.Config
+	changes        *plans.Changes
+	skipRefresh    bool
+	targets        []addrs.Targetable
+	excludeTargets []addrs.Targetable
+	forceReplace   []addrs.AbsResourceInstance
+	variables      InputValues
+	meta           *ContextMeta
+	planMode       plans.Mode
 
 	// state, refreshState, and prevRunState simultaneously track three
 	// different incarnations of the Terraform state:
@@ -375,50 +377,54 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 	switch typ {
 	case GraphTypeApply:
 		return (&ApplyGraphBuilder{
-			Config:       c.config,
-			Changes:      c.changes,
-			State:        c.state,
-			Components:   c.components,
-			Schemas:      c.schemas,
-			Targets:      c.targets,
-			ForceReplace: c.forceReplace,
-			Validate:     opts.Validate,
+			Config:         c.config,
+			Changes:        c.changes,
+			State:          c.state,
+			Components:     c.components,
+			Schemas:        c.schemas,
+			Targets:        c.targets,
+			ExcludeTargets: c.excludeTargets,
+			ForceReplace:   c.forceReplace,
+			Validate:       opts.Validate,
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypeValidate:
 		// The validate graph is just a slightly modified plan graph: an empty
 		// state is substituted in for Validate.
 		return ValidateGraphBuilder(&PlanGraphBuilder{
-			Config:     c.config,
-			Components: c.components,
-			Schemas:    c.schemas,
-			Targets:    c.targets,
-			Validate:   opts.Validate,
-			State:      states.NewState(),
+			Config:         c.config,
+			Components:     c.components,
+			Schemas:        c.schemas,
+			Targets:        c.targets,
+			ExcludeTargets: c.excludeTargets,
+			Validate:       opts.Validate,
+			State:          states.NewState(),
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypePlan:
 		// Create the plan graph builder
 		return (&PlanGraphBuilder{
-			Config:       c.config,
-			State:        c.state,
-			Components:   c.components,
-			Schemas:      c.schemas,
-			Targets:      c.targets,
-			ForceReplace: c.forceReplace,
-			Validate:     opts.Validate,
-			skipRefresh:  c.skipRefresh,
+			Config:         c.config,
+			State:          c.state,
+			Components:     c.components,
+			Schemas:        c.schemas,
+			Targets:        c.targets,
+			ExcludeTargets: c.excludeTargets,
+			ForceReplace:   c.forceReplace,
+			Validate:       opts.Validate,
+			skipRefresh:    c.skipRefresh,
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypePlanDestroy:
 		return (&DestroyPlanGraphBuilder{
-			Config:      c.config,
-			State:       c.state,
-			Components:  c.components,
-			Schemas:     c.schemas,
-			Targets:     c.targets,
-			Validate:    opts.Validate,
-			skipRefresh: c.skipRefresh,
+			Config:         c.config,
+			State:          c.state,
+			Components:     c.components,
+			Schemas:        c.schemas,
+			Targets:        c.targets,
+			ExcludeTargets: c.excludeTargets,
+			Validate:       opts.Validate,
+			skipRefresh:    c.skipRefresh,
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypePlanRefreshOnly:
@@ -648,6 +654,7 @@ The -target option is not for routine use, and is provided only for exceptional 
 	// targets and provider SHAs.
 	plan.VariableValues = varVals
 	plan.TargetAddrs = c.targets
+	plan.ExcludeTargetsAddrs = c.excludeTargets
 	plan.ProviderSHA256s = c.providerSHA256s
 
 	return plan, diags

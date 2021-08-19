@@ -32,7 +32,8 @@ type DestroyPlanGraphBuilder struct {
 	Schemas *Schemas
 
 	// Targets are resources to target
-	Targets []addrs.Targetable
+	Targets        []addrs.Targetable
+	ExcludeTargets []addrs.Targetable
 
 	// Validate will do structural validation of the graph.
 	Validate bool
@@ -104,7 +105,10 @@ func (b *DestroyPlanGraphBuilder) Steps() []GraphTransformer {
 			Schemas: b.Schemas,
 		},
 
-		&TargetsTransformer{Targets: b.Targets},
+		&TargetsTransformer{
+			Targets:        b.Targets,
+			ExcludeTargets: b.ExcludeTargets,
+		},
 
 		// Close opened plugin connections
 		&CloseProviderTransformer{},

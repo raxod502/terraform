@@ -67,6 +67,7 @@ func (b *Local) context(op *backend.Operation) (*terraform.Context, *configload.
 	// Copy set options from the operation
 	opts.PlanMode = op.PlanMode
 	opts.Targets = op.Targets
+	opts.ExcludeTargets = op.ExcludeTargets
 	opts.ForceReplace = op.ForceReplace
 	opts.UIInput = op.UIIn
 	opts.Hooks = op.Hooks
@@ -266,6 +267,7 @@ func (b *Local) contextFromPlanFile(pf *planfile.Reader, opts terraform.ContextO
 	opts.Variables = variables
 	opts.Changes = plan.Changes
 	opts.Targets = plan.TargetAddrs
+	opts.ExcludeTargets = plan.ExcludeTargetsAddrs
 	opts.ForceReplace = plan.ForceReplaceAddrs
 	opts.ProviderSHA256s = plan.ProviderSHA256s
 

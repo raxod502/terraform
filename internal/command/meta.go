@@ -167,8 +167,9 @@ type Meta struct {
 	input        bool
 
 	// Targets for this context (private)
-	targets     []addrs.Targetable
-	targetFlags []string
+	targets        []addrs.Targetable
+	excludeTargets []addrs.Targetable
+	targetFlags    []string
 
 	// Internal fields
 	color bool
@@ -445,6 +446,7 @@ func (m *Meta) contextOpts() (*terraform.ContextOpts, error) {
 	var opts terraform.ContextOpts
 
 	opts.Targets = m.targets
+	opts.ExcludeTargets = m.excludeTargets
 	opts.UIInput = m.UIInput()
 	opts.Parallelism = m.parallelism
 
@@ -566,6 +568,7 @@ func (m *Meta) extendedFlagSet(n string) *flag.FlagSet {
 func (m *Meta) parseTargetFlags() tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
 	m.targets = nil
+
 	for _, tf := range m.targetFlags {
 		traversal, syntaxDiags := hclsyntax.ParseTraversalAbs([]byte(tf), "", hcl.Pos{Line: 1, Column: 1})
 		if syntaxDiags.HasErrors() {
@@ -588,6 +591,29 @@ func (m *Meta) parseTargetFlags() tfdiags.Diagnostics {
 		}
 
 		m.targets = append(m.targets, target.Subject)
+	}
+	for _, tf := range m.targetFlags {
+		traversal, syntaxDiags := hclsyntax.ParseTraversalAbs([]byte(tf), "", hcl.Pos{Line: 1, Column: 1})
+		if syntaxDiags.HasErrors() {
+			diags = diags.Append(tfdiags.Sourceless(
+				tfdiags.Error,
+				fmt.Sprintf("Invalid target %q", tf),
+				syntaxDiags[0].Detail,
+			))
+			continue
+		}
+
+		excludeTargets, targetDiags := addrs.ParseTarget(traversal)
+		if targetDiags.HasErrors() {
+			diags = diags.Append(tfdiags.Sourceless(
+				tfdiags.Error,
+				fmt.Sprintf("Invalid target %q", tf),
+				targetDiags[0].Description().Detail,
+			))
+			continue
+		}
+
+		m.targets = append(m.excludeTargets, excludeTargets.Subject)
 	}
 	return diags
 }

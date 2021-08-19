@@ -352,6 +352,7 @@ func (m *Meta) Operation(b backend.Backend) *backend.Operation {
 		PlanOutBackend: planOutBackend,
 		Parallelism:    m.parallelism,
 		Targets:        m.targets,
+		ExcludeTargets: m.excludeTargets,
 		UIIn:           m.UIInput(),
 		UIOut:          m.Ui,
 		Workspace:      workspace,

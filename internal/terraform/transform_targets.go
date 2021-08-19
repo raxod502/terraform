@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/addrs"
@@ -14,6 +15,7 @@ import (
 // node must filter this list to targets considered relevant.
 type GraphNodeTargetable interface {
 	SetTargets([]addrs.Targetable)
+	//may need to be looked at bc it affected targeting cloned resources
 }
 
 // TargetsTransformer is a GraphTransformer that, when the user specifies a
@@ -21,7 +23,8 @@ type GraphNodeTargetable interface {
 // their dependencies.
 type TargetsTransformer struct {
 	// List of targeted resource names specified by the user
-	Targets []addrs.Targetable
+	Targets        []addrs.Targetable
+	ExcludeTargets []addrs.Targetable
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
@@ -33,6 +36,21 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 
 		for _, v := range g.Vertices() {
 			if !targetedNodes.Include(v) {
+				log.Printf("[DEBUG] Removing %q, filtered by targeting.", dag.VertexName(v))
+				g.Remove(v)
+			}
+		}
+	}
+
+	if len(t.ExcludeTargets) > 0 {
+		fmt.Println("transform_targets.go")
+		targetedNodes, err := t.selectTargetedNodes(g, t.ExcludeTargets)
+		if err != nil {
+			return err
+		}
+
+		for _, v := range g.Vertices() {
+			if targetedNodes.Include(v) {
 				log.Printf("[DEBUG] Removing %q, filtered by targeting.", dag.VertexName(v))
 				g.Remove(v)
 			}
