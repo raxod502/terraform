@@ -149,10 +149,12 @@ func (c *PlanCommand) OperationRequest(
 	opReq.PlanRefresh = args.Refresh
 	opReq.PlanOutPath = planOutPath
 	opReq.Targets = args.Targets
+	opReq.ExcludeTargets = args.ExcludeTargets
 	opReq.ForceReplace = args.ForceReplace
 	opReq.Type = backend.OperationTypePlan
 	opReq.View = view.Operation()
-
+	fmt.Println("plan.go")
+	fmt.Println(opReq.ExcludeTargets[0].String())
 	var err error
 	opReq.ConfigLoader, err = c.initConfigLoader()
 	if err != nil {

@@ -249,7 +249,8 @@ type Plan struct {
 	// This must match the set of addresses that was used when creating the
 	// plan, or else applying the plan will fail when it reaches a different
 	// conclusion about what action a particular resource instance needs.
-	ForceReplaceAddrs []string `protobuf:"bytes,16,rep,name=force_replace_addrs,json=forceReplaceAddrs,proto3" json:"force_replace_addrs,omitempty"`
+	ExcludeTargetsAddrs []string `protobuf:"bytes,5,rep,name=exclude_targets_addrs,json=excludeTargetsAddrs,proto3" json:"exclude_targets_addrs,omitempty"`
+	ForceReplaceAddrs   []string `protobuf:"bytes,16,rep,name=force_replace_addrs,json=forceReplaceAddrs,proto3" json:"force_replace_addrs,omitempty"`
 	// The version string for the Terraform binary that created this plan.
 	TerraformVersion string `protobuf:"bytes,14,opt,name=terraform_version,json=terraformVersion,proto3" json:"terraform_version,omitempty"`
 	// Backend is a description of the backend configuration and other related
