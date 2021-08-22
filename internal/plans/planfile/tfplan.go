@@ -112,6 +112,7 @@ func readTfplan(r io.Reader) (*plans.Plan, error) {
 		if diags.HasErrors() {
 			return nil, fmt.Errorf("plan contains invalid target address %q: %s", target, diags.Err())
 		}
+		fmt.Println("tfplan, target")
 		plan.TargetAddrs = append(plan.TargetAddrs, target.Subject)
 	}
 
@@ -120,6 +121,7 @@ func readTfplan(r io.Reader) (*plans.Plan, error) {
 		if diags.HasErrors() {
 			return nil, fmt.Errorf("plan contains invalid target address %q: %s", excludeTarget, diags.Err())
 		}
+		fmt.Println("tfplan, exclude")
 		plan.ExcludeTargetsAddrs = append(plan.ExcludeTargetsAddrs, excludeTarget.Subject)
 	}
 

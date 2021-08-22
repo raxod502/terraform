@@ -154,7 +154,11 @@ func (c *PlanCommand) OperationRequest(
 	opReq.Type = backend.OperationTypePlan
 	opReq.View = view.Operation()
 	fmt.Println("plan.go")
-	fmt.Println(opReq.ExcludeTargets[0].String())
+	if len(opReq.ExcludeTargets) > 0 {
+		fmt.Println(opReq.ExcludeTargets[0].String())
+	} else {
+		fmt.Println("no excludeTargests found")
+	}
 	var err error
 	opReq.ConfigLoader, err = c.initConfigLoader()
 	if err != nil {
