@@ -374,6 +374,16 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 	}
 
 	log.Printf("[INFO] terraform: building graph: %s", typ)
+	/* if len(c.excludeTargets) > 0 {
+		fmt.Println(c.excludeTargets[0].String())
+	} else {
+		fmt.Println("no excludeTargests found")
+	} */
+	if len(c.targets) > 0 {
+		fmt.Println(c.targets[0].String())
+	} else {
+		fmt.Println("no excludeTargests found")
+	}
 	switch typ {
 	case GraphTypeApply:
 		return (&ApplyGraphBuilder{
