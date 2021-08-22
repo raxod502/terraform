@@ -28,7 +28,9 @@ type TargetsTransformer struct {
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
+	fmt.Println("transformTargs is used")
 	if len(t.Targets) > 0 {
+		fmt.Println("Transform for targets is used")
 		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
 		if err != nil {
 			return err

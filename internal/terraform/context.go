@@ -380,9 +380,14 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 		fmt.Println("no excludeTargests found")
 	} */
 	if len(c.targets) > 0 {
-		fmt.Println(c.targets[0].String())
+		fmt.Println(c.targets[0].String(), "context.go")
 	} else {
-		fmt.Println("no excludeTargests found")
+		fmt.Println("no Targets found")
+	}
+	if len(c.excludeTargets) > 0 {
+		fmt.Println(c.excludeTargets[0].String())
+	} else {
+		fmt.Println("no excludeTargets found")
 	}
 	switch typ {
 	case GraphTypeApply:
