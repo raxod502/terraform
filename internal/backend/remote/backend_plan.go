@@ -114,22 +114,6 @@ func (b *Remote) opPlan(stopCtx, cancelCtx context.Context, op *backend.Operatio
 		}
 	}
 
-	if len(op.ExcludeTargets) != 0 {
-		desiredAPIVersion, _ := version.NewVersion("2.3")
-		fmt.Println("backend_plan.go")
-		if parseErr != nil || currentAPIVersion.LessThan(desiredAPIVersion) {
-			diags = diags.Append(tfdiags.Sourceless(
-				tfdiags.Error,
-				"Resource targeting is not supported",
-				fmt.Sprintf(
-					`The host %s does not support the -target option for `+
-						`remote plans.`,
-					b.hostname,
-				),
-			))
-		}
-	}
-
 	if !op.PlanRefresh {
 		desiredAPIVersion, _ := version.NewVersion("2.4")
 
@@ -317,14 +301,6 @@ in order to capture the filesystem context the remote workspace expects:
 		for _, addr := range op.Targets {
 			runOptions.TargetAddrs = append(runOptions.TargetAddrs, addr.String())
 		}
-	}
-
-	if len(op.ExcludeTargets) != 0 {
-		runOptions.ExcludeTargetAddrs = make([]string, 0, len(op.ExcludeTargets))
-		for _, addr := range op.ExcludeTargets {
-			runOptions.ExcludeTargetAddrs = append(runOptions.ExcludeTargetAddrs, addr.String())
-		}
-		fmt.Println(op.ExcludeTargets[0].String())
 	}
 
 	if len(op.ForceReplace) != 0 {

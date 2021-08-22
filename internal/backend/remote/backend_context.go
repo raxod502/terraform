@@ -63,7 +63,6 @@ func (b *Remote) Context(op *backend.Operation) (*terraform.Context, statemgr.Fu
 	// Copy set options from the operation
 	opts.PlanMode = op.PlanMode
 	opts.Targets = op.Targets
-	opts.ExcludeTargets = op.ExcludeTargets
 	opts.UIInput = op.UIIn
 
 	// Load the latest state. If we enter contextFromPlanFile below then the
