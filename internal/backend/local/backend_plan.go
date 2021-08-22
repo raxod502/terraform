@@ -22,6 +22,12 @@ func (b *Local) opPlan(
 
 	log.Printf("[INFO] backend/local: starting Plan operation")
 
+	if len(op.ExcludeTargets) > 0 {
+		fmt.Println(op.ExcludeTargets[0].String(), "in backend_plan")
+	} else {
+		fmt.Println("no excludeTargests found in backend_plan")
+	}
+
 	var diags tfdiags.Diagnostics
 
 	if op.PlanFile != nil {

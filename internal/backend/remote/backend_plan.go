@@ -319,13 +319,13 @@ in order to capture the filesystem context the remote workspace expects:
 		}
 	}
 
-	if len(op.ExcludeTargets) != 0 {
-		runOptions.ExcludeTargetAddrs = make([]string, 0, len(op.ExcludeTargets))
+	/* if len(op.ExcludeTargets) != 0 {
+		runOptions.TargetAddrs = make([]string, 0, len(op.ExcludeTargets))
 		for _, addr := range op.ExcludeTargets {
-			runOptions.ExcludeTargetAddrs = append(runOptions.ExcludeTargetAddrs, addr.String())
+			runOptions.TargetAddrs = append(runOptions.TargetAddrs, addr.String())
 		}
 		fmt.Println(op.ExcludeTargets[0].String())
-	}
+	} */
 
 	if len(op.ForceReplace) != 0 {
 		runOptions.ReplaceAddrs = make([]string, 0, len(op.ForceReplace))

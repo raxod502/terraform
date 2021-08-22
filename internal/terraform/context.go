@@ -330,21 +330,22 @@ func NewContext(opts *ContextOpts) (*Context, tfdiags.Diagnostics) {
 	}
 
 	return &Context{
-		components:   components,
-		schemas:      schemas,
-		planMode:     opts.PlanMode,
-		changes:      changes,
-		hooks:        hooks,
-		meta:         opts.Meta,
-		config:       config,
-		state:        state,
-		refreshState: state.DeepCopy(),
-		prevRunState: state.DeepCopy(),
-		skipRefresh:  opts.SkipRefresh,
-		targets:      opts.Targets,
-		forceReplace: opts.ForceReplace,
-		uiInput:      opts.UIInput,
-		variables:    variables,
+		components:     components,
+		schemas:        schemas,
+		planMode:       opts.PlanMode,
+		changes:        changes,
+		hooks:          hooks,
+		meta:           opts.Meta,
+		config:         config,
+		state:          state,
+		refreshState:   state.DeepCopy(),
+		prevRunState:   state.DeepCopy(),
+		skipRefresh:    opts.SkipRefresh,
+		targets:        opts.Targets,
+		excludeTargets: opts.ExcludeTargets,
+		forceReplace:   opts.ForceReplace,
+		uiInput:        opts.UIInput,
+		variables:      variables,
 
 		parallelSem:         NewSemaphore(par),
 		providerInputConfig: make(map[string]map[string]cty.Value),
@@ -451,6 +452,7 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 			Components:      c.components,
 			Schemas:         c.schemas,
 			Targets:         c.targets,
+			ExcludeTargets:  c.excludeTargets,
 			Validate:        opts.Validate,
 			skipRefresh:     c.skipRefresh,
 			skipPlanChanges: true, // this activates "refresh only" mode.
@@ -862,6 +864,22 @@ func (c *Context) prePlanFindAndApplyMoves() ([]refactoring.MoveStatement, map[a
 			}
 		}
 	}
+	/* if len(c.excludeTargets) > 0 {
+		for _, result := range moveResults {
+			matchesTarget := false
+			for _, targetAddr := range c.excludeTargets {
+				if targetAddr.TargetContains(result.From) {
+					matchesTarget = true
+					break
+				}
+			}
+			if !matchesTarget {
+				// TODO: Return an error stating that a targeted plan is
+				// only valid if it includes this address that was moved.
+			}
+		}
+	} */
+
 	return moveStmts, moveResults
 }
 
