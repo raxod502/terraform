@@ -12,7 +12,8 @@ import (
 // ImportOpts are used as the configuration for Import.
 type ImportOpts struct {
 	// Targets are the targets to import
-	Targets []*ImportTarget
+	Targets        []*ImportTarget
+	ExcludeTargets []*ImportTarget
 
 	// SetVariables are the variables set outside of the configuration,
 	// such as on the command line, in variables files, etc.
@@ -55,9 +56,10 @@ func (c *Context) Import(config *configs.Config, prevRunState *states.State, opt
 
 	// Initialize our graph builder
 	builder := &ImportGraphBuilder{
-		ImportTargets: opts.Targets,
-		Config:        config,
-		Plugins:       c.plugins,
+		ImportTargets:        opts.Targets,
+		ImportExcludeTargets: opts.ExcludeTargets,
+		Config:               config,
+		Plugins:              c.plugins,
 	}
 
 	// Build the graph

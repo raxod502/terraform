@@ -104,6 +104,7 @@ func (t *ProviderTransformer) Transform(g *Graph) error {
 		Exact bool // If true, inheritence from parent modules is not attempted
 	}
 	requested := map[dag.Vertex]map[string]ProviderRequest{}
+	fmt.Println(requested)
 	needConfigured := map[string]addrs.AbsProviderConfig{}
 	for _, v := range g.Vertices() {
 		// Does the vertex _directly_ use a provider?
@@ -231,7 +232,9 @@ func (t *ProviderTransformer) Transform(g *Graph) error {
 
 			log.Printf("[DEBUG] ProviderTransformer: %q (%T) needs %s", dag.VertexName(v), v, dag.VertexName(target))
 			if pv, ok := v.(GraphNodeProviderConsumer); ok {
+				//fmt.Println("transform_provider used")
 				pv.SetProvider(target.ProviderAddr())
+				fmt.Println(pv.Provider)
 			}
 			g.Connect(dag.BasicEdge(v, target))
 		}
