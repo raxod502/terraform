@@ -26,6 +26,7 @@ type ImportCommand struct {
 }
 
 func (c *ImportCommand) Run(args []string) int {
+	fmt.Println("Uses import.go")
 	// Get the pwd since its our default -config flag value
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -232,6 +233,12 @@ func (c *ImportCommand) Run(args []string) int {
 	// one while we stabilize this feature.
 	newState, importDiags := ctx.Import(&terraform.ImportOpts{
 		Targets: []*terraform.ImportTarget{
+			&terraform.ImportTarget{
+				Addr: addr,
+				ID:   args[1],
+			},
+		},
+		ExcludeTargets: []*terraform.ImportTarget{
 			&terraform.ImportTarget{
 				Addr: addr,
 				ID:   args[1],

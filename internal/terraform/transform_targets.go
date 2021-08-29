@@ -28,6 +28,7 @@ type TargetsTransformer struct {
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
+	fmt.Println("transform_targets.go")
 	if len(t.Targets) > 0 {
 		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
 		if err != nil {
@@ -43,7 +44,7 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 	}
 
 	if len(t.ExcludeTargets) > 0 {
-		fmt.Println("transform_targets.go")
+
 		targetedNodes, err := t.selectTargetedNodes(g, t.ExcludeTargets)
 		if err != nil {
 			return err

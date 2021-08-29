@@ -330,21 +330,22 @@ func NewContext(opts *ContextOpts) (*Context, tfdiags.Diagnostics) {
 	}
 
 	return &Context{
-		components:   components,
-		schemas:      schemas,
-		planMode:     opts.PlanMode,
-		changes:      changes,
-		hooks:        hooks,
-		meta:         opts.Meta,
-		config:       config,
-		state:        state,
-		refreshState: state.DeepCopy(),
-		prevRunState: state.DeepCopy(),
-		skipRefresh:  opts.SkipRefresh,
-		targets:      opts.Targets,
-		forceReplace: opts.ForceReplace,
-		uiInput:      opts.UIInput,
-		variables:    variables,
+		components:     components,
+		schemas:        schemas,
+		planMode:       opts.PlanMode,
+		changes:        changes,
+		hooks:          hooks,
+		meta:           opts.Meta,
+		config:         config,
+		state:          state,
+		refreshState:   state.DeepCopy(),
+		prevRunState:   state.DeepCopy(),
+		skipRefresh:    opts.SkipRefresh,
+		targets:        opts.Targets,
+		excludeTargets: opts.ExcludeTargets,
+		forceReplace:   opts.ForceReplace,
+		uiInput:        opts.UIInput,
+		variables:      variables,
 
 		parallelSem:         NewSemaphore(par),
 		providerInputConfig: make(map[string]map[string]cty.Value),
@@ -382,7 +383,7 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 	if len(c.targets) > 0 {
 		fmt.Println(c.targets[0].String())
 	} else {
-		fmt.Println("no excludeTargests found")
+		fmt.Println("no Targets found in context")
 	}
 	switch typ {
 	case GraphTypeApply:

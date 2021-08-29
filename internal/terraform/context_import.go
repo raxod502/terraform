@@ -9,7 +9,8 @@ import (
 // ImportOpts are used as the configuration for Import.
 type ImportOpts struct {
 	// Targets are the targets to import
-	Targets []*ImportTarget
+	Targets        []*ImportTarget
+	ExcludeTargets []*ImportTarget
 }
 
 // ImportTarget is a single resource to import.
@@ -46,10 +47,11 @@ func (c *Context) Import(opts *ImportOpts) (*states.State, tfdiags.Diagnostics) 
 
 	// Initialize our graph builder
 	builder := &ImportGraphBuilder{
-		ImportTargets: opts.Targets,
-		Config:        c.config,
-		Components:    c.components,
-		Schemas:       c.schemas,
+		ImportTargets:        opts.Targets,
+		ImportExcludeTargets: opts.ExcludeTargets,
+		Config:               c.config,
+		Components:           c.components,
+		Schemas:              c.schemas,
 	}
 
 	// Build the graph!

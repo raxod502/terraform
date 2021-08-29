@@ -12,7 +12,8 @@ import (
 // simpler graph than a normal configuration graph.
 type ImportGraphBuilder struct {
 	// ImportTargets are the list of resources to import.
-	ImportTargets []*ImportTarget
+	ImportTargets        []*ImportTarget
+	ImportExcludeTargets []*ImportTarget
 
 	// Module is a configuration to build the graph from. See ImportOpts.Config.
 	Config *configs.Config
@@ -65,7 +66,7 @@ func (b *ImportGraphBuilder) Steps() []GraphTransformer {
 		&AttachResourceConfigTransformer{Config: b.Config},
 
 		// Add the import steps
-		&ImportStateTransformer{Targets: b.ImportTargets, Config: b.Config},
+		&ImportStateTransformer{Targets: b.ImportTargets, ExcludeTargets: b.ImportExcludeTargets, Config: b.Config},
 
 		TransformProviders(b.Components.ResourceProviders(), concreteProvider, config),
 

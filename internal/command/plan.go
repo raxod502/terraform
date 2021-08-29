@@ -157,7 +157,7 @@ func (c *PlanCommand) OperationRequest(
 	if len(opReq.ExcludeTargets) > 0 {
 		fmt.Println(opReq.ExcludeTargets[0].String())
 	} else {
-		fmt.Println("no excludeTargests found")
+		fmt.Println("no excludeTargets found in plan")
 	}
 	var err error
 	opReq.ConfigLoader, err = c.initConfigLoader()
