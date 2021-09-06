@@ -3,6 +3,9 @@ Terraform gets the exclude target even though it shouldn't
 Error message stemming from eval_providers.go, leads to node_resource_destroy.go in managedResourceExecute
 How does the anonymous function in graphwalkcontext get args
 
+For this meeting:
+setTargets in node_resource_abstract (https://github.com/Th3will/terraform/blob/6915cf34a739d8014d8c4b048865aff6a5f00a54/internal/terraform/node_resource_abstract.go?plain=1) needs to include exclude targets. However it typically only accepts one argument which is seen in transform_targets.go
+
 Panic Message to find the difference in:
 Exclude:
 github.com/hashicorp/terraform/internal/terraform.getProvider(...)
