@@ -1,3 +1,4 @@
+https://docs.google.com/document/d/1j50UwUYQhnX7nOxeCIeR1SeWEZ08ec_MrQMCKFUK58Q/edit
 changes.go: internal\plans\changes.go
 Terraform gets the exclude target even though it shouldn't
 Error message stemming from eval_providers.go, leads to node_resource_destroy.go in managedResourceExecute
