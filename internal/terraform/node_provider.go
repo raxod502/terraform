@@ -22,16 +22,12 @@ var (
 
 // GraphNodeExecutable
 func (n *NodeApplyableProvider) Execute(ctx EvalContext, op walkOperation) (diags tfdiags.Diagnostics) {
-	fmt.Println("uses node_provider")
-	fmt.Println(n.Addr.Alias)
 	_, err := ctx.InitProvider(n.Addr)
 	diags = diags.Append(err)
 	if diags.HasErrors() {
 		return diags
 	}
-	fmt.Println("before nodeprov")
 	provider, _, err := getProvider(ctx, n.Addr)
-	fmt.Println("after nodeprov")
 	diags = diags.Append(err)
 	if diags.HasErrors() {
 		return diags

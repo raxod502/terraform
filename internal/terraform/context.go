@@ -373,18 +373,7 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 	if opts == nil {
 		opts = &ContextGraphOpts{Validate: true}
 	}
-
 	log.Printf("[INFO] terraform: building graph: %s", typ)
-	/* if len(c.excludeTargets) > 0 {
-		fmt.Println(c.excludeTargets[0].String())
-	} else {
-		fmt.Println("no excludeTargests found")
-	} */
-	if len(c.targets) > 0 {
-		fmt.Println(c.targets[0].String())
-	} else {
-		fmt.Println("no Targets found in context")
-	}
 	switch typ {
 	case GraphTypeApply:
 		return (&ApplyGraphBuilder{
@@ -403,13 +392,13 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 		// The validate graph is just a slightly modified plan graph: an empty
 		// state is substituted in for Validate.
 		return ValidateGraphBuilder(&PlanGraphBuilder{
-			Config:         c.config,
-			Components:     c.components,
-			Schemas:        c.schemas,
-			Targets:        c.targets,
-			ExcludeTargets: c.excludeTargets,
-			Validate:       opts.Validate,
-			State:          states.NewState(),
+			Config:     c.config,
+			Components: c.components,
+			Schemas:    c.schemas,
+			//Targets:        c.targets,
+			//ExcludeTargets: c.excludeTargets,
+			Validate: opts.Validate,
+			State:    states.NewState(),
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypePlan:

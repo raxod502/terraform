@@ -141,7 +141,6 @@ func (n *NodeApplyableResourceInstance) Execute(ctx EvalContext, op walkOperatio
 }
 
 func (n *NodeApplyableResourceInstance) dataResourceExecute(ctx EvalContext) (diags tfdiags.Diagnostics) {
-	fmt.Println("nodeapply1")
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
 	diags = diags.Append(err)
 	if diags.HasErrors() {
@@ -184,7 +183,6 @@ func (n *NodeApplyableResourceInstance) managedResourceExecute(ctx EvalContext) 
 	var state *states.ResourceInstanceObject
 	var createBeforeDestroyEnabled bool
 	var deposedKey states.DeposedKey
-	fmt.Println("nodeapply2")
 	addr := n.ResourceInstanceAddr().Resource
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
 	diags = diags.Append(err)

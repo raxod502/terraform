@@ -1,4 +1,6 @@
 https://docs.google.com/document/d/1j50UwUYQhnX7nOxeCIeR1SeWEZ08ec_MrQMCKFUK58Q/edit
+
+selecTargetNode ignores providers that should be gone
 changes.go: internal\plans\changes.go
 Terraform gets the exclude target even though it shouldn't
 Error message stemming from eval_providers.go, leads to node_resource_destroy.go in managedResourceExecute
@@ -22,10 +24,8 @@ github.com/hashicorp/terraform/internal/terraform.(*NodeValidatableResource).val
 github.com/hashicorp/terraform/internal/terraform.(*NodeValidatableResource).Execute(0xc0003ab9c8, 0x2adf3c0, 0xc000c56700, 0x144fbd3b104, 0xc000c99ce8, 0x23c06a, 0x22bf800)
         C:/CompSci/Terraform/terraform/internal/terraform/node_resource_validate.go:39 +0x45
 
-
 github.com/hashicorp/terraform/internal/terraform.(*ContextGraphWalker).Execute(0xc0009712b0, 0x2adf3c0, 0xc000c56700, 0x144fbd3b1e0, 0xc0003ab9c8, 0x0, 0x0, 0x0)
         C:/CompSci/Terraform/terraform/internal/terraform/graph_walk_context.go:129 +0xc6
-
 
 github.com/hashicorp/terraform/internal/terraform.(*Graph).walk.func1(0x25a5460, 0xc0003ab9c8, 0x0, 0x0, 0x0)
         C:/CompSci/Terraform/terraform/internal/terraform/graph.go:59 +0xbe2

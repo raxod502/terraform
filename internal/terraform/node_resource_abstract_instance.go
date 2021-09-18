@@ -288,7 +288,6 @@ func (n *NodeAbstractResourceInstance) writeResourceInstanceStateDeposed(ctx Eva
 // one of the two wrappers to be explicit about which of the instance's
 // objects you are intending to write.
 func (n *NodeAbstractResourceInstance) writeResourceInstanceStateImpl(ctx EvalContext, deposedKey states.DeposedKey, obj *states.ResourceInstanceObject, targetState phaseState) error {
-	fmt.Println("1")
 	absAddr := n.Addr
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
 	if err != nil {
@@ -449,7 +448,6 @@ func (n *NodeAbstractResourceInstance) planDestroy(ctx EvalContext, currentState
 // global planned changes.
 func (n *NodeAbstractResourceInstance) writeChange(ctx EvalContext, change *plans.ResourceInstanceChange, deposedKey states.DeposedKey) error {
 	changes := ctx.Changes()
-	fmt.Println(2)
 	if change == nil {
 		// Caller sets nil to indicate that we need to remove a change from
 		// the set of changes.
@@ -496,7 +494,6 @@ func (n *NodeAbstractResourceInstance) writeChange(ctx EvalContext, change *plan
 // refresh does a refresh for a resource
 func (n *NodeAbstractResourceInstance) refresh(ctx EvalContext, deposedKey states.DeposedKey, state *states.ResourceInstanceObject) (*states.ResourceInstanceObject, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
-	fmt.Println(3)
 	absAddr := n.Addr
 	if deposedKey == states.NotDeposed {
 		log.Printf("[TRACE] NodeAbstractResourceInstance.refresh for %s", absAddr)
@@ -628,7 +625,6 @@ func (n *NodeAbstractResourceInstance) plan(
 	var diags tfdiags.Diagnostics
 	var state *states.ResourceInstanceObject
 	var plan *plans.ResourceInstanceChange
-	fmt.Println(4)
 
 	config := *n.Config
 	resource := n.Addr.Resource.Resource
@@ -1299,7 +1295,6 @@ func processIgnoreChangesIndividual(prior, config cty.Value, ignoreChangesPath [
 func (n *NodeAbstractResourceInstance) readDataSource(ctx EvalContext, configVal cty.Value) (cty.Value, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
 	var newVal cty.Value
-	fmt.Println(5)
 	config := *n.Config
 
 	provider, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
@@ -1413,7 +1408,6 @@ func (n *NodeAbstractResourceInstance) readDataSource(ctx EvalContext, configVal
 
 func (n *NodeAbstractResourceInstance) providerMetas(ctx EvalContext) (cty.Value, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
-	fmt.Println(6)
 	metaConfigVal := cty.NullVal(cty.DynamicPseudoType)
 
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
@@ -1455,7 +1449,6 @@ func (n *NodeAbstractResourceInstance) providerMetas(ctx EvalContext) (cty.Value
 func (n *NodeAbstractResourceInstance) planDataSource(ctx EvalContext, currentState *states.ResourceInstanceObject) (*plans.ResourceInstanceChange, *states.ResourceInstanceObject, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
 	var configVal cty.Value
-	fmt.Println(7)
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
 	if err != nil {
 		return nil, nil, diags.Append(err)
@@ -1632,7 +1625,6 @@ func (n *NodeAbstractResourceInstance) forcePlanReadData(ctx EvalContext) bool {
 // actually reading from the data source or generating a plan to do so.
 func (n *NodeAbstractResourceInstance) applyDataSource(ctx EvalContext, planned *plans.ResourceInstanceChange) (*states.ResourceInstanceObject, tfdiags.Diagnostics) {
 	var diags tfdiags.Diagnostics
-	fmt.Println(8)
 
 	_, providerSchema, err := getProvider(ctx, n.ResolvedProvider)
 	if err != nil {
@@ -1957,7 +1949,6 @@ func (n *NodeAbstractResourceInstance) apply(
 	change *plans.ResourceInstanceChange,
 	applyConfig *configs.Resource,
 	createBeforeDestroy bool) (*states.ResourceInstanceObject, tfdiags.Diagnostics) {
-	fmt.Println(9)
 	var diags tfdiags.Diagnostics
 	if state == nil {
 		state = &states.ResourceInstanceObject{}

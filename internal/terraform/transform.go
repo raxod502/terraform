@@ -1,7 +1,6 @@
 package terraform
 
 import (
-	//"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/dag"
@@ -30,7 +29,6 @@ type graphTransformerMulti struct {
 
 func (t *graphTransformerMulti) Transform(g *Graph) error {
 	var lastStepStr string
-	//fmt.Println("Transform is used")
 	for _, t := range t.Transforms {
 		log.Printf("[TRACE] (graphTransformerMulti) Executing graph transform %T", t)
 		if err := t.Transform(g); err != nil {

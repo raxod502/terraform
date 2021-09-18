@@ -21,7 +21,6 @@ import (
 func (b *Local) Context(op *backend.Operation) (*terraform.Context, statemgr.Full, tfdiags.Diagnostics) {
 	// Make sure the type is invalid. We use this as a way to know not
 	// to ask for input/validate.
-	fmt.Println("Context is called but not context")
 	op.Type = backend.OperationTypeInvalid
 
 	op.StateLocker = op.StateLocker.WithContext(context.Background())
@@ -72,12 +71,6 @@ func (b *Local) context(op *backend.Operation) (*terraform.Context, *configload.
 	opts.ForceReplace = op.ForceReplace
 	opts.UIInput = op.UIIn
 	opts.Hooks = op.Hooks
-
-	if len(opts.ExcludeTargets) > 0 {
-		fmt.Println(opts.ExcludeTargets[0].String())
-	} else {
-		fmt.Println("Backend:local, no exclude")
-	}
 	opts.SkipRefresh = op.Type != backend.OperationTypeRefresh && !op.PlanRefresh
 	if opts.SkipRefresh {
 		log.Printf("[DEBUG] backend/local: skipping refresh of managed resources")
