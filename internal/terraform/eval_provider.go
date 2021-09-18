@@ -45,7 +45,6 @@ func getProvider(ctx EvalContext, addr addrs.AbsProviderConfig) (providers.Inter
 		// Should never happen
 		panic("GetProvider used with uninitialized provider configuration address")
 	}
-	fmt.Println("evalprov used")
 	provider := ctx.Provider(addr)
 	if provider == nil {
 		return nil, &ProviderSchema{}, fmt.Errorf("provider %s not initialized", addr)
