@@ -154,6 +154,10 @@ func (t *TargetsTransformer) selectExcludedNodes(g *Graph, addrs []addrs.Targeta
 			if tn, ok := v.(GraphNodeTargetable); ok {
 				tn.SetTargets(addrs)
 			}
+			desc, _ := g.Descendents(v)
+			for _, d := range desc {
+				targetedNodes.Add(d)
+			}
 		}
 	}
 
