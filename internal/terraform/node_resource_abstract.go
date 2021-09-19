@@ -264,7 +264,6 @@ func (n *NodeAbstractResource) ResourceAddr() addrs.ConfigResource {
 func (n *NodeAbstractResource) SetTargets(targets []addrs.Targetable) {
 	n.Targets = targets
 	n.ExcludeTargets = []addrs.Targetable{}
-	fmt.Printf("[DEBUG] SetTargets: %#v\n", targets)
 }
 
 // graphNodeAttachDataResourceDependsOn

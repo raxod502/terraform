@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	//"fmt"
 	"log"
 	"strings"
 
@@ -40,7 +41,7 @@ func (g *Graph) walk(walker GraphWalker) tfdiags.Diagnostics {
 	// Walk the graph.
 	walkFn := func(v dag.Vertex) (diags tfdiags.Diagnostics) {
 		log.Printf("[TRACE] vertex %q: starting visit (%T)", dag.VertexName(v), v)
-
+		//fmt.Printf("[TRACE] vertex %q: starting visit (%T) \n\n", dag.VertexName(v), v)
 		defer func() {
 			if diags.HasErrors() {
 				for _, diag := range diags {
