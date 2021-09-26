@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/addrs"
@@ -27,6 +28,7 @@ type TargetsTransformer struct {
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
+	t.RedundantTargets()
 	if len(t.Targets) > 0 {
 		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
 		if err != nil {
@@ -36,7 +38,6 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 		for _, v := range g.Vertices() {
 			if !targetedNodes.Include(v) {
 				log.Printf("[DEBUG] Removing %q, filtered by targeting.", dag.VertexName(v))
-				//fmt.Printf("Removing %q, filtered by targeting.\n", dag.VertexName(v))
 				g.Remove(v)
 			}
 		}
@@ -52,13 +53,25 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 		for _, v := range g.Vertices() {
 			if targetedNodes.Include(v) {
 				log.Printf("[DEBUG] Removing %q, filtered by targeting.", dag.VertexName(v))
-				//fmt.Printf("Removing %q, filtered by targeting.\n", dag.VertexName(v))
 				g.Remove(v)
 			}
 		}
 	}
 
 	return nil
+}
+
+//checks list of target and excludeTargets to see if any are the same, if so prints
+func (t *TargetsTransformer) RedundantTargets() {
+
+	if len(t.Targets) == 0 || len(t.ExcludeTargets) == 0 {
+	}
+	for i, target := range t.Targets {
+		fmt.Println(t.ExcludeTargets[i].String(), target.String())
+		if t.ExcludeTargets[i].String() == (t.Targets[i].String()) {
+			fmt.Println("List of Target includes excluded targets")
+		}
+	}
 }
 
 // Returns a set of targeted nodes. A targeted node is either addressed
