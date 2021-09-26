@@ -63,13 +63,12 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 
 //checks list of target and excludeTargets to see if any are the same, if so prints
 func (t *TargetsTransformer) RedundantTargets() {
-
 	if len(t.Targets) == 0 || len(t.ExcludeTargets) == 0 {
 	}
 	for i, target := range t.Targets {
 		fmt.Println(t.ExcludeTargets[i].String(), target.String())
 		if t.ExcludeTargets[i].String() == (t.Targets[i].String()) {
-			fmt.Println("List of Target includes excluded targets")
+			log.Printf("[WARN] excluding and targeting the same module")
 		}
 	}
 }
