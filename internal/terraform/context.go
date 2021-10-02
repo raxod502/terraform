@@ -532,6 +532,17 @@ func (c *Context) Eval(path addrs.ModuleInstance) (*lang.Scope, tfdiags.Diagnost
 //       State() method. Currently the helper/resource testing framework relies
 //       on the absence of a returned state to determine if Destroy can be
 //       called, so that will need to be refactored before this can be changed.
+func (c *Context) RedundantTargets() bool {
+	for _, target := range c.targets {
+		for _, excludeTargets := range c.excludeTargets {
+			if excludeTargets.String() == (target.String()) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (c *Context) Apply() (*states.State, tfdiags.Diagnostics) {
 	defer c.acquireRun("apply")()
 
@@ -585,6 +596,25 @@ Note that the -target option is not suitable for routine use, and is provided on
 		))
 	}
 
+	if len(c.excludeTargets) > 0 {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Warning,
+			"Applied changes may be incomplete",
+			`The plan was created with the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
+    terraform plan
+	
+Note that the -exclude option is not suitable for routine use`,
+		))
+
+	}
+
+	if c.RedundantTargets() {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Warning,
+			"Applied changes may be incomplete",
+			"Resources were both targeted and excluded",
+		))
+	}
 	// This isn't technically needed, but don't leave an old refreshed state
 	// around in case we re-use the context in internal tests.
 	c.refreshState = c.state.DeepCopy()
@@ -615,6 +645,13 @@ The -target option is not for routine use, and is provided only for exceptional 
 		))
 	}
 
+	if c.RedundantTargets() {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Warning,
+			"Applied changes may be incomplete",
+			"Resources were both targeted and excluded",
+		))
+	}
 	var plan *plans.Plan
 	var planDiags tfdiags.Diagnostics
 	switch c.planMode {

@@ -45,6 +45,19 @@ func TestTargetsTransformer(t *testing.T) {
 		}
 	}
 
+	/* {
+		transform := &TargetsTransformer{
+			ExcludeTargets: []addrs.Targetable{
+				addrs.RootModuleInstance.Resource(
+					addrs.ManagedResourceMode, "aws_instance", "me",
+				),
+			},
+		}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("err: %s", err)
+		}
+	}
+	*/
 	actual := strings.TrimSpace(g.String())
 	expected := strings.TrimSpace(`
 aws_instance.me
