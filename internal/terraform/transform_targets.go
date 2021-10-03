@@ -1,7 +1,6 @@
 package terraform
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform/internal/addrs"
@@ -28,7 +27,6 @@ type TargetsTransformer struct {
 }
 
 func (t *TargetsTransformer) Transform(g *Graph) error {
-	t.RedundantTargets()
 	if len(t.Targets) > 0 {
 		targetedNodes, err := t.selectTargetedNodes(g, t.Targets)
 		if err != nil {
@@ -62,16 +60,6 @@ func (t *TargetsTransformer) Transform(g *Graph) error {
 }
 
 //checks list of target and excludeTargets to see if any are the same, if so prints
-func (t *TargetsTransformer) RedundantTargets() {
-	if len(t.Targets) == 0 || len(t.ExcludeTargets) == 0 {
-	}
-	for i, target := range t.Targets {
-		fmt.Println(t.ExcludeTargets[i].String(), target.String())
-		if t.ExcludeTargets[i].String() == (t.Targets[i].String()) {
-			log.Printf("[WARN] excluding and targeting the same module")
-		}
-	}
-}
 
 // Returns a set of targeted nodes. A targeted node is either addressed
 // directly, address indirectly via its container, or it's a dependency of a
