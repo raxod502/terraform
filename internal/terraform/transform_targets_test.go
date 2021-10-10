@@ -58,19 +58,6 @@ aws_vpc.me
 	}
 }
 
-/* Graph for nothing:
-aws_instance.me
-          aws_subnet.me
-        aws_instance.notme
-        aws_instance.notmeeither
-          aws_instance.me
-        aws_subnet.me
-          aws_vpc.me
-        aws_subnet.notme
-        aws_vpc.me
-        aws_vpc.notme */
-
-//issue: it targets aws_vpc.me
 func TestExcludeTargetsTransformer(t *testing.T) {
 	mod := testModule(t, "transform-targets-basic")
 
@@ -207,24 +194,6 @@ output.grandchild_id
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
 	}
 }
-
-/* Graph w/o Transformations:
-aws_instance.foo
-        module.child.aws_instance.foo
-        /module.child.module.grandchild.aws_instance.foo
-        /module.child.module.grandchild.output.id (expand)
-          /module.child.module.grandchild.aws_instance.foo
-        /module.child.output.grandchild_id (expand)
-          /module.child.module.grandchild.output.id (expand)
-        module.child.output.id (expand)
-          module.child.aws_instance.foo
-        output.child_id
-          module.child.output.id (expand)
-        /output.grandchild_id
-          /module.child.output.grandchild_id (expand)
-        output.root_id
-          aws_instance.foo
-*/
 
 func TestExcludeTargetsTransformer_downstream(t *testing.T) {
 	mod := testModule(t, "transform-targets-downstream")
@@ -370,24 +339,6 @@ output.grandchild_id
 	}
 }
 
-/* Graph w/o Transform:
-		aws_instance.foo
-        module.child.aws_instance.foo
-        module.child.module.grandchild.aws_instance.foo
-        module.child.module.grandchild.output.id (expand)
-          module.child.module.grandchild.aws_instance.foo
-        module.child.output.grandchild_id (expand)
-          module.child.module.grandchild.output.id (expand)
-        module.child.output.id (expand)
-          module.child.aws_instance.foo
-        output.child_id
-          module.child.output.id (expand)
-        output.grandchild_id
-          module.child.output.grandchild_id (expand)
-        output.root_id
-          aws_instance.foo
-*/
-
 func TestExcludeTargetsTransformer_wholeModule(t *testing.T) {
 	mod := testModule(t, "transform-targets-downstream")
 
@@ -452,6 +403,69 @@ output.child_id
 	module.child.output.id (expand)
 output.root_id
 aws_instance.foo
+	`)
+	if actual != expected {
+		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
+	}
+}
+
+func TestBothTargetTransformer(t *testing.T) {
+	mod := testModule(t, "transform-targets-conflict")
+
+	g := Graph{Path: addrs.RootModuleInstance}
+	{
+		transform := &ConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &AttachResourceConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &AttachResourceConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &OutputTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &ReferenceTransformer{}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("err: %s", err)
+		}
+	}
+
+	{
+		transform := &TargetsTransformer{
+			Targets: []addrs.Targetable{
+				addrs.RootModuleInstance.Module().Child("child"),
+			},
+			ExcludeTargets: []addrs.Targetable{
+				addrs.RootModuleInstance.Module().Child("child"),
+			},
+		}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	actual := strings.TrimSpace(g.String())
+	// Even though we only asked to target the grandchild module, all of the
+	// outputs that descend from it are also targeted.
+	expected := strings.TrimSpace(`
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
