@@ -474,7 +474,7 @@ func TestBothTargetTransformer(t *testing.T) {
 				addrs.RootModuleInstance.Module().Child("child"),
 			},
 			ExcludeTargets: []addrs.Targetable{
-				addrs.RootModuleInstance.Module().Child("child"),
+				addrs.RootModuleInstance.Module().Child("child").Resource(addrs.ManagedResourceMode, "aws_vpc", "foo"),
 			},
 		}
 		if err := transform.Transform(&g); err != nil {
@@ -486,6 +486,7 @@ func TestBothTargetTransformer(t *testing.T) {
 	// Even though we only asked to target the grandchild module, all of the
 	// outputs that descend from it are also targeted.
 	expected := strings.TrimSpace(`
+	module.child.aws_instance.foo
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
