@@ -161,6 +161,55 @@ func (t *TargetsTransformer) selectExcludedNodes(g *Graph, addrs []addrs.Targeta
 		}
 	}
 
+	// It is expected that outputs which are only derived from targeted
+	// resources are also updated. While we don't include any other possible
+	// side effects from the targeted nodes, these are added because outputs
+	// cannot be targeted on their own.
+	// Start by finding the root module output nodes themselves
+	for _, v := range vertices {
+		// outputs are all temporary value types
+		tv, ok := v.(graphNodeTemporaryValue)
+		if !ok {
+			continue
+		}
+
+		// root module outputs indicate that while they are an output type,
+		// they not temporary and will return false here.
+		if tv.temporaryValue() {
+			continue
+		}
+
+		// If this output is descended only from targeted resources, then we
+		// will keep it
+		deps, _ := g.Descendents(v)
+		found := 0
+		for _, d := range deps {
+			switch d.(type) {
+			case GraphNodeResourceInstance:
+			case GraphNodeConfigResource:
+			default:
+				continue
+			}
+
+			if !targetedNodes.Include(d) {
+				// this dependency isn't being targeted, so we can't process this
+				// output
+				found = 0
+				break
+			}
+
+			found++
+		}
+
+		if found > 0 {
+			// we found an output we can keep; add it, and all it's dependencies
+			targetedNodes.Add(v)
+			for _, d := range deps {
+				targetedNodes.Add(d)
+			}
+		}
+	}
+
 	return targetedNodes, nil
 }
 
