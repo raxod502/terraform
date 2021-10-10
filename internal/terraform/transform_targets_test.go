@@ -287,12 +287,21 @@ func TestExcludeTargetsTransformer_downstream(t *testing.T) {
 	expected := strings.TrimSpace(`
 aws_instance.foo
 module.child.aws_instance.foo
+<<<<<<< HEAD
 	module.child.output.id (expand)
 module.child.aws_instance.foo
 output.child_id
 	module.child.output.id (expand)
 output.root_id
 aws_instance.foo
+=======
+module.child.output.id (expand)
+	module.child.aws_instance.foo
+output.child_id
+	module.child.output.id (expand)
+output.root_id
+	aws_instance.foo
+>>>>>>> df61339a5f4393f8fe713b0cd0ca6e3a15512289
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
@@ -357,14 +366,13 @@ func TestTargetsTransformer_wholeModule(t *testing.T) {
 	// Even though we only asked to target the grandchild module, all of the
 	// outputs that descend from it are also targeted.
 	expected := strings.TrimSpace(`
-	aws_instance.foo
-	module.child.aws_instance.foo
-	module.child.output.id (expand)
-	  module.child.aws_instance.foo
-	output.child_id
-	  module.child.output.id (expand)
-	output.root_id
-	  aws_instance.foo
+module.child.module.grandchild.aws_instance.foo
+module.child.module.grandchild.output.id (expand)
+	module.child.module.grandchild.aws_instance.foo
+module.child.output.grandchild_id (expand)
+	module.child.module.grandchild.output.id (expand)
+output.grandchild_id
+	module.child.output.grandchild_id (expand)
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
@@ -445,6 +453,7 @@ func TestExcludeTargetsTransformer_wholeModule(t *testing.T) {
 	// Even though we only asked to exclude the grandchild module, all of the
 	// outputs that descend from it are also targeted.
 	expected := strings.TrimSpace(`
+<<<<<<< HEAD
 	aws_instance.foo
     module.child.aws_instance.foo
     module.child.output.id (expand)
@@ -453,6 +462,16 @@ func TestExcludeTargetsTransformer_wholeModule(t *testing.T) {
         module.child.output.id (expand)
     output.root_id
         aws_instance.foo
+=======
+aws_instance.foo
+module.child.aws_instance.foo
+module.child.output.id (expand)
+	module.child.aws_instance.foo
+output.child_id
+	module.child.output.id (expand)
+output.root_id
+aws_instance.foo
+>>>>>>> df61339a5f4393f8fe713b0cd0ca6e3a15512289
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
