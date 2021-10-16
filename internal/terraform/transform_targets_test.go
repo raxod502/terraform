@@ -256,12 +256,21 @@ func TestExcludeTargetsTransformer_downstream(t *testing.T) {
 	expected := strings.TrimSpace(`
 aws_instance.foo
 module.child.aws_instance.foo
+<<<<<<< HEAD
+	module.child.output.id (expand)
+module.child.aws_instance.foo
+output.child_id
+	module.child.output.id (expand)
+output.root_id
+aws_instance.foo
+=======
 module.child.output.id (expand)
 	module.child.aws_instance.foo
 output.child_id
 	module.child.output.id (expand)
 output.root_id
 	aws_instance.foo
+>>>>>>> df61339a5f4393f8fe713b0cd0ca6e3a15512289
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
@@ -395,6 +404,16 @@ func TestExcludeTargetsTransformer_wholeModule(t *testing.T) {
 	// Even though we only asked to exclude the grandchild module, all of the
 	// outputs that descend from it are also targeted.
 	expected := strings.TrimSpace(`
+<<<<<<< HEAD
+	aws_instance.foo
+    module.child.aws_instance.foo
+    module.child.output.id (expand)
+        module.child.aws_instance.foo
+    output.child_id
+        module.child.output.id (expand)
+    output.root_id
+        aws_instance.foo
+=======
 aws_instance.foo
 module.child.aws_instance.foo
 module.child.output.id (expand)
@@ -403,6 +422,7 @@ output.child_id
 	module.child.output.id (expand)
 output.root_id
 aws_instance.foo
+>>>>>>> df61339a5f4393f8fe713b0cd0ca6e3a15512289
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)

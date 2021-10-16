@@ -568,7 +568,6 @@ func (m *Meta) extendedFlagSet(n string) *flag.FlagSet {
 func (m *Meta) parseTargetFlags() tfdiags.Diagnostics {
 	var diags tfdiags.Diagnostics
 	m.targets = nil
-
 	for _, tf := range m.targetFlags {
 		traversal, syntaxDiags := hclsyntax.ParseTraversalAbs([]byte(tf), "", hcl.Pos{Line: 1, Column: 1})
 		if syntaxDiags.HasErrors() {
@@ -613,7 +612,7 @@ func (m *Meta) parseTargetFlags() tfdiags.Diagnostics {
 			continue
 		}
 
-		m.targets = append(m.excludeTargets, excludeTargets.Subject)
+		m.excludeTargets = append(m.excludeTargets, excludeTargets.Subject)
 	}
 	return diags
 }
