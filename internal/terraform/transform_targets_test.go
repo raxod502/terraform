@@ -97,11 +97,10 @@ func TestExcludeTargetsTransformer(t *testing.T) {
 	}
 	actual := strings.TrimSpace(g.String())
 	expected := strings.TrimSpace(`
-aws_instance.me
-  aws_subnet.me
-aws_subnet.me
-  aws_vpc.me
+aws_instance.notme
+aws_subnet.notme
 aws_vpc.me
+aws_vpc.notme
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
@@ -279,7 +278,7 @@ module.child.output.id (expand)
 output.child_id
   module.child.output.id (expand)
 output.root_id
-	aws_instance.foo
+  aws_instance.foo
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
