@@ -58,19 +58,6 @@ aws_vpc.me
 	}
 }
 
-/* Graph for nothing:
-aws_instance.me
-          aws_subnet.me
-        aws_instance.notme
-        aws_instance.notmeeither
-          aws_instance.me
-        aws_subnet.me
-          aws_vpc.me
-        aws_subnet.notme
-        aws_vpc.me
-        aws_vpc.notme */
-
-//issue: it targets aws_vpc.me
 func TestExcludeTargetsTransformer(t *testing.T) {
 	mod := testModule(t, "transform-targets-basic")
 
@@ -448,11 +435,80 @@ func TestExcludeTargetsTransformer_wholeModule(t *testing.T) {
 aws_instance.foo
 module.child.aws_instance.foo
 module.child.output.id (expand)
-	module.child.aws_instance.foo
+  module.child.aws_instance.foo
 output.child_id
-	module.child.output.id (expand)
+  module.child.output.id (expand)
 output.root_id
+<<<<<<< HEAD
 aws_instance.foo
+||||||| parent of 5b9c4c06d8 (Changed Tests so they work)
+aws_instance.foo
+>>>>>>> df61339a5f4393f8fe713b0cd0ca6e3a15512289
+	`)
+	if actual != expected {
+		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
+	}
+}
+
+func TestBothTargetTransformer(t *testing.T) {
+	mod := testModule(t, "transform-targets-conflict")
+
+	g := Graph{Path: addrs.RootModuleInstance}
+	{
+		transform := &ConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &AttachResourceConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &AttachResourceConfigTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &OutputTransformer{Config: mod}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	{
+		transform := &ReferenceTransformer{}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("err: %s", err)
+		}
+	}
+
+	{
+		transform := &TargetsTransformer{
+			Targets: []addrs.Targetable{
+				addrs.RootModuleInstance.Module().Child("child"),
+			},
+			ExcludeTargets: []addrs.Targetable{
+				addrs.RootModuleInstance.Module().Child("child").Resource(addrs.ManagedResourceMode, "aws_vpc", "foo"),
+			},
+		}
+		if err := transform.Transform(&g); err != nil {
+			t.Fatalf("%T failed: %s", transform, err)
+		}
+	}
+
+	actual := strings.TrimSpace(g.String())
+	// Even though we only asked to target the grandchild module, all of the
+	// outputs that descend from it are also targeted.
+	expected := strings.TrimSpace(`
+	module.child.aws_instance.foo
+>>>>>>> 5b9c4c06d8 (Changed Tests so they work)
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
