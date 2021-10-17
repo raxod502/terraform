@@ -257,9 +257,9 @@ func TestExcludeTargetsTransformer_downstream(t *testing.T) {
 aws_instance.foo
 module.child.aws_instance.foo
 module.child.output.id (expand)
-	module.child.aws_instance.foo
+  module.child.aws_instance.foo
 output.child_id
-	module.child.output.id (expand)
+  module.child.output.id (expand)
 output.root_id
 	aws_instance.foo
 	`)
@@ -328,11 +328,11 @@ func TestTargetsTransformer_wholeModule(t *testing.T) {
 	expected := strings.TrimSpace(`
 module.child.module.grandchild.aws_instance.foo
 module.child.module.grandchild.output.id (expand)
-	module.child.module.grandchild.aws_instance.foo
+  module.child.module.grandchild.aws_instance.foo
 module.child.output.grandchild_id (expand)
-	module.child.module.grandchild.output.id (expand)
+  module.child.module.grandchild.output.id (expand)
 output.grandchild_id
-	module.child.output.grandchild_id (expand)
+  module.child.output.grandchild_id (expand)
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
