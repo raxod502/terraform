@@ -275,9 +275,9 @@ func TestExcludeTargetsTransformer_downstream(t *testing.T) {
 aws_instance.foo
 module.child.aws_instance.foo
 module.child.output.id (expand)
-	module.child.aws_instance.foo
+  module.child.aws_instance.foo
 output.child_id
-	module.child.output.id (expand)
+  module.child.output.id (expand)
 output.root_id
 	aws_instance.foo
 	`)
@@ -344,6 +344,7 @@ func TestTargetsTransformer_wholeModule(t *testing.T) {
 	// Even though we only asked to target the grandchild module, all of the
 	// outputs that descend from it are also targeted.
 	expected := strings.TrimSpace(`
+<<<<<<< HEAD
 aws_instance.foo
 module.child.aws_instance.foo
 module.child.output.id (expand)
@@ -352,6 +353,23 @@ output.child_id
 	module.child.output.id (expand)
 output.root_id
 	aws_instance.foo
+||||||| parent of 2129c377fa (fixed more spacing in transform_targets_tests.go)
+module.child.module.grandchild.aws_instance.foo
+module.child.module.grandchild.output.id (expand)
+	module.child.module.grandchild.aws_instance.foo
+module.child.output.grandchild_id (expand)
+	module.child.module.grandchild.output.id (expand)
+output.grandchild_id
+	module.child.output.grandchild_id (expand)
+=======
+module.child.module.grandchild.aws_instance.foo
+module.child.module.grandchild.output.id (expand)
+  module.child.module.grandchild.aws_instance.foo
+module.child.output.grandchild_id (expand)
+  module.child.module.grandchild.output.id (expand)
+output.grandchild_id
+  module.child.output.grandchild_id (expand)
+>>>>>>> 2129c377fa (fixed more spacing in transform_targets_tests.go)
 	`)
 	if actual != expected {
 		t.Fatalf("bad:\n\nexpected:\n%s\n\ngot:\n%s\n", expected, actual)
