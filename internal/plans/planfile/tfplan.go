@@ -120,7 +120,7 @@ func readTfplan(r io.Reader) (*plans.Plan, error) {
 		if diags.HasErrors() {
 			return nil, fmt.Errorf("plan contains invalid target address %q: %s", excludeTarget, diags.Err())
 		}
-		plan.ExcludeTargetsAddrs = append(plan.ExcludeTargetsAddrs, excludeTarget.Subject)
+		plan.ExcludeTargetAddrs = append(plan.ExcludeTargetAddrs, excludeTarget.Subject)
 	}
 
 	for _, rawReplaceAddr := range rawPlan.ForceReplaceAddrs {
