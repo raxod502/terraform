@@ -591,36 +591,6 @@ func (c *Context) Apply() (*states.State, tfdiags.Diagnostics) {
 		c.state.PruneResourceHusks()
 	}
 
-	if len(c.targets) > 0 {
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Warning,
-			"Applied changes may be incomplete",
-			`The plan was created with the -target option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
-    terraform plan
-	
-Note that the -target option is not suitable for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
-		))
-	}
-
-	if len(c.excludeTargets) > 0 {
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Warning,
-			"Applied changes may be incomplete",
-			`The plan was created with the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
-    terraform plan
-	
-Note that the -exclude option is not suitable for routine use`,
-		))
-
-	}
-
-	if c.RedundantTargets() {
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Warning,
-			"Applied changes may be incomplete",
-			"Resources were both targeted and excluded",
-		))
-	}
 	// This isn't technically needed, but don't leave an old refreshed state
 	// around in case we re-use the context in internal tests.
 	c.refreshState = c.state.DeepCopy()
@@ -641,23 +611,32 @@ func (c *Context) Plan() (*plans.Plan, tfdiags.Diagnostics) {
 	c.changes = plans.NewChanges()
 	var diags tfdiags.Diagnostics
 
-	if len(c.targets) > 0 {
-		diags = diags.Append(tfdiags.Sourceless(
-			tfdiags.Warning,
-			"Resource targeting is in effect",
-			`You are creating a plan with the -target option, which means that the result of this plan may not represent all of the changes requested by the current configuration.
-		
-The -target option is not for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
-		))
-	}
-
 	if c.RedundantTargets() {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
+			"All resources were excluded by targeting",
+			"The same resource was passed to both -target and -exclude, meaning that no resources were included in this apply operation.",
+		))
+	} else if len(c.targets) > 0 {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Warning,
 			"Applied changes may be incomplete",
-			"Resources were both targeted and excluded",
+			`The plan was created with the -target option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
+    terraform plan
+	
+Note that the -target option is not suitable for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.`,
+		))
+	} else if len(c.excludeTargets) > 0 {
+		diags = diags.Append(tfdiags.Sourceless(
+			tfdiags.Warning,
+			"Applied changes may be incomplete",
+			`The plan was created with the -exclude option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
+    terraform plan
+	
+Note that the -exclude option is not suitable for routine use`,
 		))
 	}
+
 	var plan *plans.Plan
 	var planDiags tfdiags.Diagnostics
 	switch c.planMode {
