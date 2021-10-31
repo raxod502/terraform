@@ -533,7 +533,7 @@ func (c *Context) Eval(path addrs.ModuleInstance) (*lang.Scope, tfdiags.Diagnost
 //       on the absence of a returned state to determine if Destroy can be
 //       called, so that will need to be refactored before this can be changed.
 
-func (c *Context) RedundantTargets() bool {
+func (c *Context) HasConflictingTargetOptions() bool {
 
 	targetSet := make(map[string]bool)
 	for _, s := range c.targets {
@@ -611,7 +611,7 @@ func (c *Context) Plan() (*plans.Plan, tfdiags.Diagnostics) {
 	c.changes = plans.NewChanges()
 	var diags tfdiags.Diagnostics
 
-	if c.RedundantTargets() {
+	if c.HasConflictingTargetOptions() {
 		diags = diags.Append(tfdiags.Sourceless(
 			tfdiags.Warning,
 			"All resources were excluded by targeting",
