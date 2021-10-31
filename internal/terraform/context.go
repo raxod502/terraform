@@ -532,14 +532,20 @@ func (c *Context) Eval(path addrs.ModuleInstance) (*lang.Scope, tfdiags.Diagnost
 //       State() method. Currently the helper/resource testing framework relies
 //       on the absence of a returned state to determine if Destroy can be
 //       called, so that will need to be refactored before this can be changed.
+
 func (c *Context) RedundantTargets() bool {
-	for _, target := range c.targets {
-		for _, excludeTargets := range c.excludeTargets {
-			if excludeTargets.String() == (target.String()) {
-				return true
-			}
+
+	targetSet := make(map[string]bool)
+	for _, s := range c.targets {
+		targetSet[s.String()] = true
+	}
+
+	for _, excludeTargets := range c.excludeTargets {
+		if targetSet[excludeTargets.String()] {
+			return true
 		}
 	}
+
 	return false
 }
 
