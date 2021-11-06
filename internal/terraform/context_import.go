@@ -47,11 +47,10 @@ func (c *Context) Import(opts *ImportOpts) (*states.State, tfdiags.Diagnostics) 
 
 	// Initialize our graph builder
 	builder := &ImportGraphBuilder{
-		ImportTargets:        opts.Targets,
-		ImportExcludeTargets: opts.ExcludeTargets,
-		Config:               c.config,
-		Components:           c.components,
-		Schemas:              c.schemas,
+		ImportTargets: opts.Targets,
+		Config:        c.config,
+		Components:    c.components,
+		Schemas:       c.schemas,
 	}
 
 	// Build the graph!
