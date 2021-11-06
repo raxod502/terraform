@@ -395,10 +395,8 @@ func (c *Context) Graph(typ GraphType, opts *ContextGraphOpts) (*Graph, tfdiags.
 			Config:     c.config,
 			Components: c.components,
 			Schemas:    c.schemas,
-			//Targets:        c.targets,
-			//ExcludeTargets: c.excludeTargets,
-			Validate: opts.Validate,
-			State:    states.NewState(),
+			Validate:   opts.Validate,
+			State:      states.NewState(),
 		}).Build(addrs.RootModuleInstance)
 
 	case GraphTypePlan:
