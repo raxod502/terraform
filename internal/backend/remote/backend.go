@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-svchost/disco"
 	"github.com/hashicorp/terraform/internal/backend"
 	"github.com/hashicorp/terraform/internal/configs/configschema"
+	"github.com/hashicorp/terraform/internal/logging"
 	"github.com/hashicorp/terraform/internal/states/remote"
 	"github.com/hashicorp/terraform/internal/states/statemgr"
 	"github.com/hashicorp/terraform/internal/terraform"
@@ -568,6 +569,17 @@ func (b *Remote) workspaces() ([]string, error) {
 	return names, nil
 }
 
+// WorkspaceNamePattern provides an appropriate workspace renaming pattern for backend migration
+// purposes (handled outside of this package), based on previous usage of this backend with the
+// 'prefix' workspace functionality. As of this writing, see meta_backend.migrate.go
+func (b *Remote) WorkspaceNamePattern() string {
+	if b.prefix != "" {
+		return b.prefix + "*"
+	}
+
+	return ""
+}
+
 // DeleteWorkspace implements backend.Enhanced.
 func (b *Remote) DeleteWorkspace(name string) error {
 	if b.workspace == "" && name == backend.DefaultStateName {
@@ -755,6 +767,7 @@ func (b *Remote) Operation(ctx context.Context, op *backend.Operation) (*backend
 
 	// Do it.
 	go func() {
+		defer logging.PanicHandler()
 		defer done()
 		defer stop()
 		defer cancel()
