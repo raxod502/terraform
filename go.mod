@@ -63,7 +63,7 @@ require (
 	github.com/mitchellh/go-linereader v0.0.0-20190213213312-1b945b3263eb
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/mitchellh/gox v1.0.1
-	github.com/mitchellh/mapstructure v1.1.2
+	github.com/mitchellh/mapstructure v1.4.3
 	github.com/mitchellh/reflectwalk v1.0.2
 	github.com/nishanths/exhaustive v0.2.3
 	github.com/packer-community/winrmcp v0.0.0-20180921211025-c76d91c1e7db
@@ -73,7 +73,7 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.232
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tag v1.0.233
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.29
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
 	github.com/tombuildsstuff/giovanni v0.15.1
 	github.com/xanzy/ssh-agent v0.3.1
 	github.com/xlab/treeprint v0.0.0-20161029104018-1d6e34225557
@@ -125,6 +125,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
+	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/coreos/go-semver v0.2.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20181012123002-c6f51f82210d // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
